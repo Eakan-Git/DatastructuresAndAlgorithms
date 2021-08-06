@@ -1,149 +1,143 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct node
+struct Node 
 {
-	string data;
-	//question = false
-	//answer = true
-	//bool type = false;
-	node *yes_ans, *no_ans;
+    string data;
+    Node* yes_ans;
+    Node* no_ans;
 };
-typedef node* nodePtr;
+typedef Node* Tree;
 
-//File processing
-void openFile(ifstream &inFile);
-void openFile(ofstream &outFile);
-void readFile(nodePtr& start, ifstream& inFile);
-void writeFile(nodePtr start, ofstream& outFile);
-
-//Testing
-void print(nodePtr root);
-
-//Deallocating memory
-void free_memory(nodePtr root);
-
-int main()
+void readFile(Tree& Game, fstream& file) 
 {
-	ifstream inFile;
-	ofstream outFile;
-	nodePtr root;
+    string input;
+    getline(file, input);
+    if (input != "#") 
+    {
+        Game = new Node;
+        Game->data = input;
+        readFile(Game->yes_ans, file);
+        readFile(Game->no_ans, file);
+    }
+    else
+        Game = NULL;
+}
 
-	openFile(inFile);
-	readFile(root, inFile);
-	inFile.close();
-	print(root);
-	string lastInput;
-	nodePtr p = root;
-	do
-	{
-		cout << root->data << endl;
-		getline(cin, lastInput);
-		p = (tolower(lastInput[0]) == 'y') ? p->yes_ans : p->no_ans;
-	//loop until reach the leaf node
-	} while(p->yes_ans != NULL);
+void writeFile(Tree& Game, fstream& file) 
+{
+    if (Game != NULL) 
+    {
+        file << Game->data << endl;
+        writeFile(Game->yes_ans, file);
+        writeFile(Game->no_ans, file);
+    }
+    else
+        file << "#" << endl;
+}
 
-	cout << p->data << endl;
-	cout << "Am I right?\n";
-	getline(cin, lastInput);
-	if(tolower(lastInput[0]) == 'y')
-		cout << "That was easy!\n";
-	else
-	{
-		cout << "Well, I don't know this animal.\n";
-		cout << "What is it?\n";
-		getline(cin, lastInput);
-		string correctAnimal = lastInput;
+int menu() 
+{
+    int choice;
+    system("cls");
+    cout << "[1] Play game" << endl;
+    cout << "[2] Exit game" << endl;
+    do
+    {
+        cout << "Your choice: ";
+        cin >> choice;
+    } while (choice < 1 || choice > 2);
+    cin.ignore();
+    system("cls");
+    return choice;
+}
+
+void add(Tree& Game) 
+{
+    string input;
+
+    cout << "Can you teach me about that animal? [y/n]: ";
+    getline(cin, input);
+
+    if (tolower(input[0]) == 'y') 
+    {
+        string new_animal, new_data;
+        cout << "Enter a new animal follow the form:\ne.g., 'Is it a whale?':\n> ";
+        getline(cin, new_animal);
+        cout << "\nNow enter a question for which the answer is 'yes' for your new animal,\nand which does not contradict your previous answers:" << endl;
+        cout << "e.g. 'Does it has horn on head?'\n";
+        cout << "> ";
+        getline(cin, new_data);
 
 
-	}
-	openFile(outFile);
-	writeFile(root, outFile);
-	outFile.close();
+        Game->yes_ans = new Node;
+        Game->yes_ans->no_ans = NULL;
+        Game->yes_ans->yes_ans = NULL;
 
-	free_memory(root);
-	return 0;
+        Game->no_ans = new Node;
+        Game->no_ans->no_ans = NULL;
+        Game->no_ans->yes_ans = NULL;
+
+        Game->no_ans->data = Game->data;
+        
+        Game->yes_ans->data = new_animal;  
+        Game->data = new_data;
+
+        cout << "\nThank you! I'd learned a lot!\n";
+    }
+    else
+        cout << "Okay, please teach me later.\n";
+}
+
+void play(Tree& Game) 
+{
+    if (Game != NULL) 
+    {
+        string input;
+        cout << Game->data << "[y/n]: ";
+        cin.clear();
+        getline(cin, input);
+        if (tolower(input[0]) == 'y') 
+        {
+            if (Game->yes_ans == NULL)
+                cout << "That was easy!" << endl;
+            else
+                play(Game->yes_ans);
+        }
+        else 
+        {
+            if (Game->no_ans == NULL) 
+            {
+                cout << "Well, I did not expect that!\n" << endl;
+                add(Game);
+            }
+            else
+                play(Game->no_ans);
+        }
+    }
 }
 
 
-void openFile(ifstream &inFile)
+int main() 
 {
-	string fileName;
-	cout << "Input file name: ";
-	getline(cin, fileName);
-	inFile.open(fileName);
-	if(!inFile.is_open())
-	{
-		cout << "Unable to open file.\n";
-		openFile(inFile);
-	}
-	else
-	{
-		return;
-	}
-}
-void openFile(ofstream &outFile)
-{
-	string fileName;
-	cout << "Input file name: ";
-	getline(cin, fileName);
-	outFile.open(fileName);
-	if(!outFile.is_open())
-	{
-		cout << "Unable to open file.\n";
-		openFile(outFile);
-	}
-	else
-	{
-		return;
-	}
-}
-void readFile(nodePtr& start, ifstream& inFile)
-{
-	string str;
-	getline(inFile, str);
-	if(str != "")
-	{
-		start = new node;
-		start->data = str;
-		// if(str.substr(0, 2) == "#A")
-		// 	start->type = true;
-		readFile(start->yes_ans, inFile);
-		readFile(start->no_ans, inFile);
-	}
-	else
-		start = NULL;
-}
+    Tree Game = NULL;
+    fstream file;
+    int input;
+    do 
+    {
+        input = menu();
+        if (input == 1) 
+        {
+            file.open("data.txt", ios::in);
+            readFile(Game, file);
+            file.close();
 
-void writeFile(nodePtr start, ofstream& outFile)
-{
-	if(start != NULL)
-	{
-		outFile << start->data << endl;
-		writeFile(start->yes_ans, outFile);
-		writeFile(start->no_ans, outFile);
-	}
-	// else
-	// 	outFile << "" << endl;
-}
+            play(Game);
 
-void print(nodePtr root)
-{
-	if(root != NULL)
-	{
-		cout << root->data << endl;
-		print(root->yes_ans);
-		print(root->no_ans);
-	}
-	else
-		return;
-}
-void free_memory(nodePtr root)
-{
-	if(root != NULL)
-	{
-		free_memory(root->yes_ans);
-		free_memory(root->no_ans);
-	}
-	delete root;
+            file.open("data.txt", ios::out);
+            writeFile(Game, file);
+            file.close();
+        }
+    } while (input == 1);
+    return 0;
 }
