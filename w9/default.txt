@@ -1,9 +1,0 @@
-#Q Is it a mammal?
-#Q Does it has stripes?
-#A Is it a Zebra?
-#A Is it a Lion?
-#Q Is it a bird?
-#Q Does it fly?
-#A Is it an Eagle?
-#A Is it a Penguin?
-#A Is it a Gila monster?
