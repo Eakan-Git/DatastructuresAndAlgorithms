@@ -28,7 +28,19 @@ Does it sting?
 Is it a bee?
 #
 #
+Does it colorful?
+Is it a butterfly?
+#
+#
+Does it has orange wings with black dots?
+Is it a ladybug?
+#
+#
 Is it a fly?
+#
+#
+Does it is a fictitious animal?
+Is it a dragon?
 #
 #
 Is it a bat?
@@ -61,6 +73,14 @@ Is it a zebra?
 #
 #
 Is it a tiger?
+#
+#
+Does it crawl on walls?
+Is it a home gecko?
+#
+#
+Is it a rodent?
+Is it a mouse?
 #
 #
 Is it a leopard?
@@ -104,6 +124,10 @@ Is it a shrimp?
 #
 Does it has 2 tusk?
 Is it an elephant?
+#
+#
+Does it has a snout?
+Is it a pig?
 #
 #
 Is it a turtle?

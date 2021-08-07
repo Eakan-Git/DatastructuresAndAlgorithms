@@ -84,9 +84,13 @@ void add(Tree& Game)
         Game->data = new_data;
 
         cout << "\nThank you! I'd learned a lot!\n";
+        system("pause");
     }
     else
-        cout << "Okay, please teach me later.\n";
+        {
+            cout << "Okay, please teach me later.\n";
+            system("pause");
+        }
 }
 
 void play(Tree& Game) 
@@ -100,7 +104,10 @@ void play(Tree& Game)
         if (tolower(input[0]) == 'y') 
         {
             if (Game->yes_ans == NULL)
-                cout << "That was easy!" << endl;
+                {
+                    cout << "That was easy!" << endl;
+                    system("pause");
+                }
             else
                 play(Game->yes_ans);
         }
@@ -117,13 +124,20 @@ void play(Tree& Game)
     }
 }
 
-
+void freeMemory(Tree Game)
+{
+    if(Game == NULL)
+        return;
+    freeMemory(Game->yes_ans);
+    freeMemory(Game->no_ans);
+    delete Game;
+}
 int main() 
 {
     Tree Game = NULL;
     fstream file;
     int input;
-    do 
+    do
     {
         input = menu();
         if (input == 1) 
@@ -139,5 +153,7 @@ int main()
             file.close();
         }
     } while (input == 1);
+
+    freeMemory(Game);
     return 0;
 }
